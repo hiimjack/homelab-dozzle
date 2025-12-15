@@ -1,0 +1,89 @@
+services:
+  dozzle:
+    labels:
+      - dev.dozzle.name=dozzle
+      - dev.dozzle.group=system
+    container_name: dozzle
+    image: amir20/dozzle:v8.14
+    restart: always
+    healthcheck:
+      test: ["CMD", "/dozzle", "healthcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    ports:
+      - "8080:8080"
+    environment:
+      DOZZLE_ADDR: ":8080"
+      DOZZLE_LEVEL: "error"
+      DOZZLE_ENABLE_ACTIONS: true
+      DOZZLE_ENABLE_SHELL: true
+      DOZZLE_NO_ANALYTICS: 1
+      DOZZLE_AUTH_PROVIDER: simple
+      DOZZLE_AUTH_TTL: 24h
+      DOZZLE_TIMEOUT: 10s
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/dozzle/users.yaml:/data/users.yaml
+
+  nginx:
+    labels:
+      - dev.dozzle.name=nginx
+      - dev.dozzle.group=my-php-app
+      - php-app-user
+    depends_on:
+      - php-fpm
+    container_name: nginx
+    image: nginx:1.29-alpine
+    restart: always
+    ports:
+      - "8081:80"
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  php-fpm:
+    labels:
+      - dev.dozzle.name=php-fpm
+      - dev.dozzle.group=my-php-app
+      - php-app-user
+    container_name: php-fpm
+    image: php:8.5-fpm-alpine
+    restart: always
+    volumes:
+      - ./app:/var/www/html
+
+  redis:
+    labels:
+      - dev.dozzle.name=redis
+      - dev.dozzle.group=my-redis-app
+      - redis-app-user
+    container_name: redis
+    image: redis:8.4-alpine
+    restart: always
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+      retries: 3
+      timeout: 5s
+
+  redisinsight:
+    labels:
+      - dev.dozzle.name=redisinsight
+      - dev.dozzle.group=my-redis-app
+      - redis-app-user
+    depends_on:
+      redis:
+        condition: service_healthy
+    container_name: redisinsight
+    image: redis/redisinsight:2.70
+    restart: always
+    environment:
+      RI_LOG_LEVEL: "info"
+      RI_REDIS_HOST: "redis"
+      RI_REDIS_PORT: "6379"
+      RI_REDIS_ALIAS: "local-redis"
+    ports:
+      - "8082:5540"

@@ -1,0 +1,20 @@
+users:
+  # Generate with docker run -it --rm amir20/dozzle:v8 generate --name Admin --email foo@bar.com --password myPassword admin
+  admin:
+    email: foo@bar.com
+    name: Admin
+    password: $2a$11$5.MAfB4i5LyFHPzeDKAZnusDfSZ4o.6eluNa5z5lv7wqUd2niND4q
+    filter: ""
+    roles: ""
+  redis-app:
+    email: redis-app@bar.com
+    name: RedisApp
+    password: $2a$11$hoKbKu5HECHMrdoMNvC4q.8HQ.4lMWo4XBh/5kbeHFZrXA6AEF7uW
+    filter: "label=redis-app-user"
+    roles: ""
+  php-app:
+    email: php-app@bar.com
+    name: PhpApp
+    password: $2a$11$gniYvlMWd4aK6uDhfeFSpexILpoxAO5j0nmNXc0mRvqXPl/.seyQ2
+    filter: "label=php-app-user"
+    roles: ""
