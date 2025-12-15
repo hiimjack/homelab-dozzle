@@ -13,7 +13,9 @@ docker compose up -d
 ```
 
 Visit `http://localhost:8080` to see the Dozzle page
+
 Visit `http://localhost:8081` to see a simple _php_ app
+
 Visit `http://localhost:8082` to see the _redis_ web interface
 
 In this example, you can authenticate on Dozzle with three accounts.
