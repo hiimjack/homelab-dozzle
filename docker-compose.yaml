@@ -4,7 +4,7 @@ services:
       - dev.dozzle.name=dozzle
       - dev.dozzle.group=system
     container_name: dozzle
-    image: amir20/dozzle:v8.14
+    image: amir20/dozzle:v9.0
     restart: always
     healthcheck:
       test: ["CMD", "/dozzle", "healthcheck"]
